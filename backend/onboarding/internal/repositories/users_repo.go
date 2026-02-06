@@ -7,6 +7,7 @@ import (
 	"property-tax-onboarding/internal/errors"
 	"property-tax-onboarding/internal/models"
 	"property-tax-onboarding/pkg/logger"
+
 	"github.com/google/uuid"
 	"github.com/lib/pq"
 	"gorm.io/gorm"
@@ -353,7 +354,7 @@ func (r *PostgreSQLUserRepository) GetAllUsersWithFilters(ctx context.Context, f
 		query = query.WithContext(ctx).Where("is_active = ?", *filters.IsActive)
 	}
 	if filters.Username != nil && *filters.Username != "" {
-		query = query.WithContext(ctx).Where("username ILIKE ?", "%"+*filters.Username+"%")
+		query = query.WithContext(ctx).Where("username = ?", *filters.Username)
 	}
 	if filters.Email != nil && *filters.Email != "" {
 		query = query.WithContext(ctx).Where("email ILIKE ?", "%"+*filters.Email+"%")

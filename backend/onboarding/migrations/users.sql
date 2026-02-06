@@ -11,8 +11,4 @@ CREATE TABLE users (
     updated_by          VARCHAR(255),                     -- User who last updated the record (nullable)
     start_date          DATE,                             -- start date of the user
     end_date            DATE                              -- end_date of the user
-    CONSTRAINT users_pkey PRIMARY KEY (keycloak_user_id), -- primary key 
-    CONSTRAINT users_email_key UNIQUE (email),            -- email set as a unique
-    CONSTRAINT users_username_key UNIQUE (username)       -- username set as a unique
 );
-CREATE INDEX IF NOT EXISTS idx_users_deleted ON users (deleted); --indexing for deleted

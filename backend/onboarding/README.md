@@ -45,8 +45,12 @@ The Property Tax Onboarding Service is a Go-based microservice responsible for u
 - **User Profile Management**: Complete CRUD operations for user profiles with profile and address management
 - **Zone & Ward Mapping**: Assign users to multiple zones and wards using PostgreSQL array types
 - **Advanced Filtering**: Filter users by role, status, email, username, phone number, and wards
+- **User Analytics**: Get user counts by role and status for dashboard metrics
 - **Keycloak Integration**: Seamless integration with Keycloak for user creation and role assignment
+- **Automated User Activation**: Scheduled cron job for automatic user activation/deactivation based on date ranges
+- **MDMS Integration**: Integration with Master Data Management Service for data validation and retrieval
 - **RESTful API**: Well-structured REST endpoints following best practices
+- **CORS Support**: Configurable CORS middleware for cross-origin requests
 - **Database Integration**: PostgreSQL database with GORM ORM and pgx driver
 - **Layered Architecture**: Clean separation of concerns with distinct layers (Handler → Service → Repository)
 - **Transaction Support**: Atomic operations for complex updates using GORM transactions
@@ -120,9 +124,19 @@ Input validation is performed using the go-playground/validator library, with va
 #### 8. Soft Delete Pattern
 User records are soft-deleted using a `deleted_at` timestamp field, preserving data for audit and recovery (`internal/models/database_models.go`).
 
+#### 9. Scheduler Pattern
+The service includes a cron-based scheduler (`internal/scheduler/scheduler.go`) that runs automated tasks:
+- **User Activation/Deactivation**: Automatically manages user status based on `startDate` and `endDate` fields.
+- **Execution Frequency**: Configurable cron expression (currently runs every 2 minutes: `*/2 * * * *`).
+- **Integration**: Coordinates with KeycloakService to enable/disable users in both the database and Keycloak.
+- **Error Handling**: Logs failures and continues processing other users.
+
+This pattern enables time-bound user access, useful for temporary agents or seasonal workers.
+
 ### Service Dependencies
-- **Keycloak Server**: User creation and role management
-- **PostgreSQL Database**: Primary data storage
+- **Keycloak Server**: User creation, role management, and identity operations
+- **PostgreSQL Database**: Primary data storage for users, profiles, and zone mappings
+- **MDMS (Master Data Management Service)**: Master data validation and retrieval
 - **API Gateway**: Authentication and authorization (external)
 
 ### Key Components
@@ -132,6 +146,9 @@ User records are soft-deleted using a `deleted_at` timestamp field, preserving d
 - **Models**: Data structures and DTOs (`internal/models/`)
 - **Config**: Configuration management (`internal/config/`)
 - **Routes**: API route definitions (`internal/routes/`)
+- **Scheduler**: Background cron jobs for automated tasks (`internal/scheduler/`)
+- **Middleware**: CORS and other HTTP middleware (`internal/middleware/`)
+- **Utils**: Helper functions for Keycloak and MDMS integration (`internal/utils/`)
 
 
 
@@ -152,6 +169,7 @@ http://localhost:8080/api/v1
 |--------|-------------------------------|---------------------------------------------|
 | GET    | /api/v1/users                 | Get all users with filters, pagination, and search |
 | POST   | /api/v1/users                 | Create a new user (citizen, agent, service manager, commissioner) |
+| GET    | /api/v1/users/count           | Get total count of users by role and status |
 | GET    | /api/v1/users/{id}            | Retrieve a user by their ID                 |
 | PUT    | /api/v1/users/{id}            | Update complete user information            |
 | DELETE | /api/v1/users/{id}            | Soft delete user by ID                      |
@@ -183,6 +201,20 @@ KEYCLOAK_ADMIN_USERNAME=admin
 KEYCLOAK_ADMIN_PASSWORD=admin
 KEYCLOAK_CLIENT_ID=property-tax-client
 KEYCLOAK_CLIENT_SECRET=your-client-secret
+TOKEN_URL=http://localhost:8080/auth/realms/property-tax-realm/protocol/openid-connect/token
+USER_URL=http://localhost:8080/auth/admin/realms/property-tax-realm/users
+ASSIGN_ROLE_URL=http://localhost:8080/auth/admin/realms/property-tax-realm/users/{userId}/role-mappings/realm
+ROLE_URL=http://localhost:8080/auth/admin/realms/property-tax-realm/roles/{roleName}
+ROLES_URL=http://localhost:8080/auth/admin/realms/property-tax-realm/roles
+DELETE_URL=http://localhost:8080/auth/admin/realms/property-tax-realm/users/{userId}
+
+# CORS Configuration
+CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:3001
+CORS_ALLOWED_METHODS=GET,POST,PUT,DELETE,OPTIONS
+CORS_ALLOWED_HEADERS=Content-Type,Authorization
+
+# MDMS Configuration
+MDMS_API_URL=http://localhost:8081/mdms-v2
 
 # Logging Configuration
 LOG_LEVEL=info
@@ -209,7 +241,7 @@ DB_PORT=5432
 DB_USER=postgres
 DB_PASSWORD=your_password
 DB_NAME=property_tax_db
-DB_SSL_MODE=disable
+DB_SCHEMA=DIGIT3
 
 SERVER_PORT=8080
 GIN_MODE=release
@@ -220,6 +252,18 @@ KEYCLOAK_ADMIN_USERNAME=admin
 KEYCLOAK_ADMIN_PASSWORD=admin_password
 KEYCLOAK_CLIENT_ID=property-tax-onboarding
 KEYCLOAK_CLIENT_SECRET=client_secret
+TOKEN_URL=http://keycloak:8080/auth/realms/property-tax/protocol/openid-connect/token
+USER_URL=http://keycloak:8080/auth/admin/realms/property-tax/users
+ASSIGN_ROLE_URL=http://keycloak:8080/auth/admin/realms/property-tax/users/{userId}/role-mappings/realm
+ROLE_URL=http://keycloak:8080/auth/admin/realms/property-tax/roles/{roleName}
+ROLES_URL=http://keycloak:8080/auth/admin/realms/property-tax/roles
+DELETE_URL=http://keycloak:8080/auth/admin/realms/property-tax/users/{userId}
+
+CORS_ALLOWED_ORIGINS=http://localhost:3000
+CORS_ALLOWED_METHODS=GET,POST,PUT,DELETE,OPTIONS
+CORS_ALLOWED_HEADERS=Content-Type,Authorization
+
+MDMS_API_URL=http://localhost:8081/mdms-v2
 
 LOG_LEVEL=info
 LOG_FORMAT=json
@@ -260,14 +304,14 @@ property-tax-onboarding/
 │   │   └── ...
 │   ├── routes/
 │   │   └── routes.go
+│   ├── scheduler/
+│   │   └── scheduler.go
 │   ├── services/
 │   │   ├── user_service.go
-│   │   ├── keycloak_service.go
-│   │   └── ...
+│   │   └── keycloak_service.go
 │   ├── utils/
 │   │   ├── mdms_utils.go
-│   │   ├── keycloak_utils.go
-│   │   └── ...
+│   │   └── keycloak_utils.go
 │   └── validator/
 │       └── user_validation_service.go
 ├── migrations/
@@ -288,6 +332,7 @@ property-tax-onboarding/
 - `internal/models/`: Data models and DTOs
 - `internal/config/`: Configuration management
 - `internal/routes/`: API route definitions
+- `internal/scheduler/`: Cron job scheduler for automated user activation/deactivation
 - `internal/middleware/`: Custom middleware (e.g., CORS)
 - `internal/utils/`: Utility functions (e.g., MDMS, Keycloak helpers)
 - `internal/validator/`: Input validation logic
@@ -303,9 +348,10 @@ For more details, see the respective files and folders.
 Follow these steps to set up and run the Property Tax Onboarding Service for local development or in a containerized environment.
 
 ### Prerequisites
-- Go 1.24 or higher
+- Go 1.21 or higher
 - PostgreSQL 12 or higher
 - Docker (optional, for containerized setup)
+- Keycloak server (for user identity management)
 
 ### Local Development Setup
 1. **Clone the repository**
@@ -384,9 +430,6 @@ For more details, refer to the team wiki or contact the maintainers.
 ## 10. API Documentation
 
 Deployed Swagger UI — View and interact with the live API documentation:
-
-[http://10.232.161.103:30116/swagger/index.html#](http://10.232.161.103:30116/swagger/index.html#)
-
 
 ## 11. License
 

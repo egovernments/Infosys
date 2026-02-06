@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "postman-id",
+		"_postman_id": "a92e950f-879b-4043-84cb-7a2bedfb744b",
 		"name": "new_onboarding",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "exporter-id",
-		"_collection_link": "https://www.postman.com/collections/your-collection-link"
+		"_exporter_id": "49747044",
+		"_collection_link": "https://navaneetnpachalag-5669320.postman.co/workspace/Navaneet-Pachalag's-Workspace~95e88013-7a4e-4bf9-8e35-b14be97e9426/collection/49747044-a92e950f-879b-4043-84cb-7a2bedfb744b?action=share&source=collection_link&creator=49747044"
 	},
 	"item": [
 		{
@@ -20,7 +20,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"username\": \"<username>\",\r\n  \"email\": \"<email@example.com>\",\r\n  \"password\": \"<password>\",\r\n  \"role\": \"<role>\",\r\n  \"zonedata\": [\n    {\n      \"zoneNumber\": \"<zoneNumber>\",\n      \"wards\": [\"<ward-1>\", \"<ward-2>\"]\n    }\n  ],\r\n  \"preferred_language\": \"<preferred_language>\",\r\n  \"createdBy\": \"<createdBy>\",\r\n  \"updatedBy\": \"<updatedBy>\",\r\n  \"profile\": {\r\n    \"firstName\": \"<firstName>\",\r\n    \"lastName\": \"<lastName>\",\r\n    \"fullName\": \"<fullName>\",\r\n    \"phoneNumber\": \"<phoneNumber>\",\r\n    \"adhaarNo\": <adhaarNo>,\r\n    \"gender\": \"<gender>\",\r\n    \"relationshipToProperty\": \"<relationshipToProperty>\",\r\n    \"ownershipShare\": <ownershipShare>,\r\n    \"isPrimaryOwner\": <isPrimaryOwner>\r\n  }\r\n}",
+					"raw": "{\r\n  \"username\": \"Pankaj.Naik\",\r\n  \"email\": \"Pankaj.Naik@example.com\",\r\n  \"password\": \"8472\",\r\n  \"role\": \"AGENT\",\r\n  \"zonedata\": [\n    {\n      \"zoneNumber\": \"Zone-1\",\n      \"wards\": [\"Ward-1\", \"Ward-2\", \"Ward-3\"]\n    },\n    {\n      \"zoneNumber\": \"Zone-2\",\n      \"wards\": [\"Ward-10\", \"Ward-11\"]\n    }\n  ],\n  \"preferred_language\": \"hi\",\r\n  \"createdBy\": \"Pankaj\",\r\n  \"updatedBy\": \"Naik\",\r\n  \"profile\": {\r\n    \"firstName\": \"Pankaj\",\r\n    \"lastName\": \"Naik\",\r\n    \"fullName\": \"Pankaj P Naik\",\r\n    \"phoneNumber\": \"8073860800\",\r\n    \"adhaarNo\": 114456709010,\r\n    \"gender\": \"Female\",\r\n    \"relationshipToProperty\": \"Owner\",\r\n    \"ownershipShare\": 100.0,\r\n    \"isPrimaryOwner\": true\r\n  }\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -49,7 +49,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8089/api/v1/users/{userId}",
+					"raw": "http://localhost:8089/api/v1/users/93b13b8e-45c8-4da8-a131-cd1812bfaa88",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -59,7 +59,7 @@
 						"api",
 						"v1",
 						"users",
-						"{userId}"
+						"93b13b8e-45c8-4da8-a131-cd1812bfaa88"
 					]
 				}
 			},
@@ -94,7 +94,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8089/api/v1/users/{userId}",
+					"raw": "http://localhost:8089/api/v1/users/0b84b731-1e7f-42ad-98a1-bfca0f501016",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -104,7 +104,7 @@
 						"api",
 						"v1",
 						"users",
-						"{userId}"
+						"0b84b731-1e7f-42ad-98a1-bfca0f501016"
 					]
 				}
 			},
@@ -117,7 +117,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n        \"username\": \"<username>\",\r\n        \"email\": \"<email@example.com>\",\r\n        \"role\": \"<role>\",\r\n        \"isActive\": <isActive>,\r\n        \"ward\": \"<ward>\",\r\n        \"preferred_language\": \"<preferred_language>\",\r\n        \"createdBy\": \"<createdBy>\",\r\n        \"updatedBy\":\"<updatedBy>\",\r\n        \"profile\": {\r\n            \"firstName\": \"<firstName>\",\r\n            \"lastName\": \"<lastName>\",\r\n            \"fullName\": \"<fullName>\",\r\n            \"phoneNumber\": \"<phoneNumber>\",\r\n            \"adhaarNo\": <adhaarNo>,\r\n            \"gender\": \"<gender>\",\r\n            \"guardian\": \"<guardian>\",\r\n            \"guardianType\": \"<guardianType>\",\r\n            \"dateOfBirth\": \"<dateOfBirth>\",\r\n            \"address\": {\r\n                \"address_line1\": \"<address_line1>\",\r\n                \"address_line2\": \"<address_line2>\",\r\n                \"city\": \"<city>\",\r\n                \"state\": \"<state>\",\r\n                \"pin_code\": \"<pin_code>\"\r\n            },\r\n            \"department\": \"<department>\",\r\n            \"designation\": \"<designation>\",\r\n            \"workLocation\": \"<workLocation>\",\r\n            \"profilePicture\": \"<profilePicture>\",\r\n            \"relationshipToProperty\": \"<relationshipToProperty>\",\r\n            \"ownershipShare\": <ownershipShare>,\r\n            \"isPrimaryOwner\": <isPrimaryOwner>,\r\n            \"isVerified\": <isVerified>\r\n        }\r\n    }",
+					"raw": "{\r\n        \"username\": \"Navaneet.Pachalag\",\r\n        \"email\": \"Navaneet.Pachalag@example.com\",\r\n        \"role\": \"CITIZEN\",\r\n        \"isActive\": true,\r\n        \"ward\": \"Ward-49\",\r\n        \"preferred_language\": \"hi\",\r\n        \"createdBy\": \"Navaneet\",\r\n        \"updatedBy\":\"Pachalag\",\r\n        \"profile\": {\r\n            \"firstName\": \"Navaneet\",\r\n            \"lastName\": \"Pachalag\",\r\n            \"fullName\": \"Navaneet N Pachalag\",\r\n            \"phoneNumber\": \"9945255518\",\r\n            \"adhaarNo\": 625143590223,\r\n            \"gender\": \"Male\",\r\n            \"guardian\": \"Karthik\",\r\n            \"guardianType\": \"Brother\",\r\n            \"dateOfBirth\": \"07-08-2003\",\r\n            \"address\": {\r\n                \"address_line1\": \"Akshay Colont\",\r\n                \"address_line2\": \"2nd Lane\",\r\n                \"city\": \"Hubli\",\r\n                \"state\": \"Karnataka\",\r\n                \"pin_code\": \"580030\"\r\n            },\r\n            \"department\": \"\",\r\n            \"designation\": \"\",\r\n            \"workLocation\": \"\",\r\n            \"profilePicture\": \"\",\r\n            \"relationshipToProperty\": \"Owner\",\r\n            \"ownershipShare\": 100,\r\n            \"isPrimaryOwner\": true,\r\n            \"isVerified\": false\r\n        }\r\n    }",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -125,7 +125,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8089/api/v1/users/{userId}",
+					"raw": "http://localhost:8089/api/v1/users/df218e9b-87f2-4d12-bb69-9bd8d8d25477",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -135,7 +135,7 @@
 						"api",
 						"v1",
 						"users",
-						"{userId}"
+						"df218e9b-87f2-4d12-bb69-9bd8d8d25477"
 					]
 				}
 			},
@@ -222,7 +222,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8089/api/v1/users?username={username}&role=CITIZEN",
+					"raw": "http://localhost:8089/api/v1/users?username=Navaneet&role=CITIZEN",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -236,7 +236,7 @@
 					"query": [
 						{
 							"key": "username",
-							"value": "{username}"
+							"value": "Navaneet"
 						},
 						{
 							"key": "role",
